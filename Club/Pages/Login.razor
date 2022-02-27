@@ -1,0 +1,76 @@
+﻿@page "/login"
+@layout MainLayout
+@inject HttpClient Http
+
+   
+    <div class="card">
+        <h4 class="card-header username_color" style="z-index:1">ClubLogin</h4>
+        <div class="card-body" style="z-index:1">
+       
+
+            <EditForm Model="@login" OnValidSubmit="OnValidSubmit" > 
+                <DataAnnotationsValidator />
+                <div class="login_form">
+                    <div class="login_card">
+                    <div class="form-group">
+                        <label style="color: white;" >Username</label>
+                        <InputText @bind-Value="login.Username" class="form-control"  />
+                        <ValidationMessage For="@(() => login.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <label style="color: white;">Password</label>
+                        <InputText @bind-Value="login.Password" type="password" class="form-control"  />
+                        <ValidationMessage For="@(() => login.Password)" />
+                    </div>
+                    <SubmitForm>
+                        <button id="LoginBtn" type="button" disabled="@loading" onclick="@MyFunction()" class="btn btn-primary">
+                         @* onclick="@OnAfterRenderAsync()" *@
+                         @if (loading)
+                        {
+                            <span class="spinner-border spinner-border-sm mr-1"></span>
+                          
+                        } 
+                        Login
+                    </button>
+                    </SubmitForm>
+                    
+                    <NavLink href="account/register" class="btn btn-link" style="color: white;">Register</NavLink>
+                    
+                    </div>
+                    
+                </div>
+            </EditForm>
+        </div>
+        <img src="./images/loginpage.jpeg" class="login_bg" />
+
+    </div>
+
+    @code {
+        
+        private Club.Models.Account.login login = new Club.Models.Account.login();
+        private bool loading;
+        
+        
+         private void OnValidSubmit()
+        {
+          
+            Console.WriteLine("jump");
+        }
+        [Inject]
+       IJSRuntime JSRuntime { get; set; }
+
+      protected async Task MyFunction()
+      {
+         @* await JSRuntime.InvokeVoidAsync("console.log('test')"); *@
+         var jQuery = await JSRuntime.InvokeAsync<IJSObjectReference>("$", "button");
+            await jQuery.InvokeVoidAsync("LoginBtn");
+      }
+
+       @* protected async Task OnAfterRenderAsync() {
+        
+            var jQuery = await JS.InvokeAsync<IJSObjectReference>("$", "button");
+            await jQuery.InvokeVoidAsync("LoginBtn");
+        
+  } *@
+       }
+    
